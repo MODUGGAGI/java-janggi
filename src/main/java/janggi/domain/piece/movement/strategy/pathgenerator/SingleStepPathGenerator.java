@@ -1,10 +1,11 @@
-package janggi.domain.piece.movement.strategy;
+package janggi.domain.piece.movement.strategy.pathgenerator;
 
 import janggi.domain.board.Palace;
 import janggi.domain.board.Position;
+import janggi.domain.piece.movement.strategy.DirectionInformation;
 import java.util.List;
 
-public abstract class SingleStepStraightStrategy implements MoveStrategy {
+public class SingleStepPathGenerator implements PathGenerator {
 
     private static final int SINGLE_STEP_DISTANCE = 1;
     private static final String INVALID_SINGLE_STEP_STRAIGHT_MOVE = String.format(
@@ -19,7 +20,7 @@ public abstract class SingleStepStraightStrategy implements MoveStrategy {
             "[ERROR] 궁성 내에 대각선이 존재하지 않는 경로 입니다.";
 
     @Override
-    public List<Position> findPath(Position source, Position destination) {
+    public List<Position> generatePath(Position source, Position destination) {
         DirectionInformation directionInformation = new DirectionInformation(source, destination);
 
         if (isPalace(source, destination)) {
