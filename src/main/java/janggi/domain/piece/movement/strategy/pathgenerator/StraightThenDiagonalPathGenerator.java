@@ -1,16 +1,21 @@
-package janggi.domain.piece.movement.strategy;
+package janggi.domain.piece.movement.strategy.pathgenerator;
 
 import janggi.domain.board.Position;
+import janggi.domain.piece.movement.strategy.DirectionInformation;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class StraightThenDiagonalStrategy implements MoveStrategy {
+public class StraightThenDiagonalPathGenerator implements PathGenerator {
+
+    private final int diagonalCount;
+
+    public StraightThenDiagonalPathGenerator(int diagonalCount) {
+        this.diagonalCount = diagonalCount;
+    }
 
     @Override
-    public List<Position> findPath(Position source, Position destination) {
+    public List<Position> generatePath(Position source, Position destination) {
         DirectionInformation directionInformation = new DirectionInformation(source, destination);
-
-        validateMovement(directionInformation);
 
         if (directionInformation.isRowBiggerThanColumn()) {
             return createRowFirstPath(source, directionInformation);
@@ -42,15 +47,11 @@ public abstract class StraightThenDiagonalStrategy implements MoveStrategy {
         List<Position> path = new ArrayList<>();
 
         Position current = source;
-        for (int i = 0; i < getDiagonalCount(); i++) {
+        for (int i = 0; i < diagonalCount; i++) {
             current = current.moveDiagonal(directionInfo.calculateRowDirection(),
                     directionInfo.calculateColumnDirection());
             path.add(current);
         }
         return path;
     }
-
-    protected abstract void validateMovement(DirectionInformation directionInformation);
-
-    protected abstract int getDiagonalCount();
 }

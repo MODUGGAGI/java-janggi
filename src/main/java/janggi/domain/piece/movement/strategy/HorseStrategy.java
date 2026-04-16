@@ -1,6 +1,11 @@
 package janggi.domain.piece.movement.strategy;
 
-public class HorseStrategy extends StraightThenDiagonalStrategy {
+import janggi.domain.board.Position;
+import janggi.domain.piece.movement.strategy.pathgenerator.PathGenerator;
+import janggi.domain.piece.movement.strategy.pathgenerator.StraightThenDiagonalPathGenerator;
+import java.util.List;
+
+public class HorseStrategy implements MoveStrategy {
 
     private static final int DIAGONAL_COUNT = 1;
 
@@ -16,7 +21,18 @@ public class HorseStrategy extends StraightThenDiagonalStrategy {
             HORSE_DIAGONAL_MOVE_DISTANCE
     );
 
+    private final PathGenerator pathGenerator;
+
+    public HorseStrategy() {
+        this.pathGenerator = new StraightThenDiagonalPathGenerator(DIAGONAL_COUNT);
+    }
+
     @Override
+    public List<Position> findPath(Position source, Position destination) {
+        validateMovement(new DirectionInformation(source, destination));
+        return pathGenerator.generatePath(source, destination);
+    }
+
     protected void validateMovement(DirectionInformation directionInformation) {
         int absRowDifference = directionInformation.calculateAbsRowDifference();
         int absColumnDifference = directionInformation.calculateAbsColumnDifference();
@@ -25,10 +41,5 @@ public class HorseStrategy extends StraightThenDiagonalStrategy {
                 && (absRowDifference != MAX_ABS_DELTA || absColumnDifference != MIN_ABS_DELTA)) {
             throw new IllegalArgumentException(INVALID_HORSE_MOVE);
         }
-    }
-
-    @Override
-    protected int getDiagonalCount() {
-        return DIAGONAL_COUNT;
     }
 }

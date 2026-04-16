@@ -1,6 +1,11 @@
 package janggi.domain.piece.movement.strategy;
 
-public class ElephantStrategy extends StraightThenDiagonalStrategy {
+import janggi.domain.board.Position;
+import janggi.domain.piece.movement.strategy.pathgenerator.PathGenerator;
+import janggi.domain.piece.movement.strategy.pathgenerator.StraightThenDiagonalPathGenerator;
+import java.util.List;
+
+public class ElephantStrategy implements MoveStrategy {
 
     private static final int DIAGONAL_COUNT = 2;
 
@@ -16,7 +21,18 @@ public class ElephantStrategy extends StraightThenDiagonalStrategy {
             ELEPHANT_DIAGONAL_MOVE_DISTANCE
     );
 
+    private final PathGenerator pathGenerator;
+
+    public ElephantStrategy() {
+        this.pathGenerator = new StraightThenDiagonalPathGenerator(DIAGONAL_COUNT);
+    }
+
     @Override
+    public List<Position> findPath(Position source, Position destination) {
+        validateMovement(new DirectionInformation(source, destination));
+        return pathGenerator.generatePath(source, destination);
+    }
+
     protected void validateMovement(DirectionInformation directionInfo) {
         if ((directionInfo.calculateAbsRowDifference() != MIN_ABS_DELTA
                 || directionInfo.calculateAbsColumnDifference() != MAX_ABS_DELTA)
@@ -24,10 +40,5 @@ public class ElephantStrategy extends StraightThenDiagonalStrategy {
                 || directionInfo.calculateAbsColumnDifference() != MIN_ABS_DELTA)) {
             throw new IllegalArgumentException(INVALID_ELEPHANT_MOVE);
         }
-    }
-
-    @Override
-    protected int getDiagonalCount() {
-        return DIAGONAL_COUNT;
     }
 }
